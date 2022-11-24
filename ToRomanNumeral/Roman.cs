@@ -20,7 +20,12 @@ namespace ToRomanNumeral
         public string CalculateRomanValue(int value)
         {
             if (value <= 5)
-                return GetFive(value);
+            {
+                if (value < 1)
+                    throw new ArgumentOutOfRangeException("value cannot be less than 1");
+                else
+                    return GetFive(value);
+            }
             else if (value <= 10)
                 return GetTen(value);
             else if (value <= 50)
@@ -29,16 +34,23 @@ namespace ToRomanNumeral
                 return GetHundred(value);
             else if (value <= 500)
                 return GetFiveHundred(value);
-            else 
+            else if (value <= 1000)
                 return GetThousand(value);
+            else
+            {
+                if (value < 4000)
+                    return GetFourThousand(value);
+                else
+                    throw new ArgumentOutOfRangeException("value cannot be greater than 3999");
+            }
 
         }
-       /// <summary>
-       /// Function get Five handles all values less than 6
-       /// </summary>
-       /// <param name="value"></param>
-       /// <returns></returns>
-        public  string GetFive(int value)
+        /// <summary>
+        /// Function get Five handles all values less than 6
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string GetFive(int value)
         {
             string roman = "";
             if (value == 5)
@@ -223,7 +235,7 @@ namespace ToRomanNumeral
             return roman;
         }
         /// <summary>
-        /// Function GetThousand Handles all values in the range (501,100)
+        /// Function GetThousand Handles all values in the range (501,1000)
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -267,6 +279,44 @@ namespace ToRomanNumeral
             }
             return roman;
         }
+
+
+
+
+        /// <summary>
+        /// Function GetFoueThousand Handles all values in the range (1001,3999)
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public string GetFourThousand(int value)
+
+        {
+            string roman = "";
+
+            int runs = (int)value / 1000;         //get the remainder of value / 100 and use it as the number of C's we add
+            int remainder = value % 1000;         //use the remainder of value / 100 as the roman numeral equi less than 100
+           
+           
+                for (int i = 0; i < runs; i++)
+                {
+                    roman = roman + "" + GetCharecter(1000);
+                }
+
+            
+            if (remainder != 0)
+            {
+                if (remainder > 500)   //if remainder > 50 we need to convert it using the getHundred function and add the result to curr roman value
+                    roman = roman + "" + GetThousand(remainder);
+                else
+                    roman = roman + "" + GetFiveHundred(remainder);  //otherwise we use the getfifty function which will handle all values down to 1, then we add this value to our curr roman value
+
+            }
+
+            return roman;
+        }
+
+
+
         /// <summary>
         /// Function returns a char based on the value of val
         /// </summary>
